@@ -1,0 +1,67 @@
+Readability:
+1. What pieces of code help versus obscure your understanding of the algorithm?
+- the for-each loop is difficult to read because the variable names aren't descriptive (they're only letters)
+- the print statements do provide an idea of which implementation is used and what each variable is used for
+- although there are no comments, the use of whitespace in the code describes differnt steps in each implementation of the heuristics
+
+2. What comments might be helpful within the code?
+- there could be a comment noting which implementation is which
+- within the implementations, comments can be used to describe what the for-each loops do
+
+
+3. Are there places where the code could be more concise and also more clear?
+- the print statements could be combined into one print statements
+- the for-each loop could be more clear with the if-else logic
+
+
+Testability
+1. How would you test this code for bugs?
+- creating files that are bigger than the bins
+- null and negative file sizes
+- we can use junit testing for this
+- we could use assert statements and try-catch statements
+- we could print statements in the for-each loop to see the current contents of the bins
+
+2. Give a specific example of a "test case" as the code is currently written.
+- 1,200,000 
+  -800,000 
+  1,000,000 
+  null 
+  0 
+  a 
+  b 
+  & 
+
+3. What additional functions may be helpful?
+- a function to check the files and see if they're valid inputs (integers from 0 to 1,000,000)
+
+
+4. Give a specific example of a "test case" for your new function.
+- 1,200,000 
+  -800,000 
+  1,000,000 
+  null 
+  0 
+  a 
+  b 
+  & 
+
+Extensibility
+1. What Code Smells can you find?
+- bloater for long method
+- dispensables for duplicate code
+
+2. What suggestions does this code make about how someone would extend it in the future to compare the performance of a wider variety of fitting algorithms?
+- the code as it is, you would put the new algorithm in the main function even if you have to duplicate code
+
+3. What dependencies are there between different parts of the code?
+- the PQ needs to be cleared before the second algorithm starts
+- the diskID needs to be set to 1 before the 2nd algorithm starts
+
+
+4. How easy to find are those dependencies?
+- not very easy because there are no comments 
+
+5. Can you clarify or remove those dependencies?
+- we can remove these dependencies by putting the algorithms in different functions
+
