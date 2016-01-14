@@ -34,59 +34,78 @@ public class Bins {
         Scanner input = new Scanner(Bins.class.getClassLoader().getResourceAsStream(DATA_FILE));
         List<Integer> data = b.readData(input);
 
-        PriorityQueue<Disk> pq = new PriorityQueue<Disk>();
-        pq.add(new Disk(0));
-
-        int diskId = 1;
-        int total = 0;
-        for (Integer size : data) {
-            Disk d = pq.peek();
-            if (d.freeSpace() > size) {
-                pq.poll();
-                d.add(size);
-                pq.add(d);
-            } else {
-                Disk d2 = new Disk(diskId);
-                diskId++;
-                d2.add(size);
-                pq.add(d2);
-            }
-            total += size;
+        // testing for valid inputs
+        int total = validInput(data);     
+        if(total == -1) {
+        	System.out.println("invalid input");
+        	return;
         }
-
         System.out.println("total size = " + total / 1000000.0 + "GB");
+        
+        // testing each algorithm
+        // in-order
+        PriorityQueue<Disk> inorderResult = worstFitInOrder(data);       
         System.out.println();
         System.out.println("worst-fit method");
-        System.out.println("number of pq used: " + pq.size());
-        while (!pq.isEmpty()) {
-            System.out.println(pq.poll());
-        }
-        System.out.println();
-
+        printStats(inorderResult);
+       
+        // in-order-decreasing
         Collections.sort(data, Collections.reverseOrder());
-        pq.add(new Disk(0));
-
-        diskId = 1;
-        for (Integer size : data) {
-            Disk d = pq.peek();
-            if (d.freeSpace() >= size) {
-                pq.poll();
-                d.add(size);
-                pq.add(d);
-            } else {
-                Disk d2 = new Disk(diskId);
-                diskId++;
-                d2.add(size);
-                pq.add(d2);
-            }
-        }
-
+        PriorityQueue<Disk> inorderDecreasingResult = worstFitInOrder(data);       
         System.out.println();
         System.out.println("worst-fit decreasing method");
-        System.out.println("number of pq used: " + pq.size());
-        while (!pq.isEmpty()) {
-            System.out.println(pq.poll());
+        printStats(inorderDecreasingResult);
+    }
+    
+    private static int validInput(List<Integer> inputData) {
+    	// total size for all of the inputs
+    	int totalSize = 0;
+    	
+    	// iterate through the files and make sure the sizes are within [0,1000000] and return total file size
+    	// if not, return -1
+    	for(int fileSize : inputData) {
+    		totalSize += fileSize;
+    		if(fileSize > 1000000 || fileSize <0) {
+    			return -1;
+    		}
+    	}
+    	
+    	return totalSize;
+    }
+    
+    private static PriorityQueue<Disk> worstFitInOrder (List<Integer> files) {
+    	PriorityQueue<Disk> allDisks = new PriorityQueue<Disk>();
+        allDisks.add(new Disk(0));
+
+     // implements the worst fit in-order heuristic algorithm
+        int diskId = 1;
+        for (Integer size : files) {
+            Disk currDisk = allDisks.peek();
+            
+            if (currDisk.freeSpace() >= size) {
+            	 // if there's still space in the current disk
+                allDisks.poll();
+                currDisk.add(size);
+                allDisks.add(currDisk);
+            } else {
+            	// if a new disk is needed
+                Disk currDisk2 = new Disk(diskId);
+                diskId++;
+                currDisk2.add(size);
+                allDisks.add(currDisk2);
+            }
         }
-        System.out.println();
+        
+        return allDisks;
+    }
+    
+    private static void printStats(PriorityQueue<Disk> results) {
+    	// prints the contents of the priority queue
+    	 System.out.println("number of pq used: " + results.size());
+         while (!results.isEmpty()) {
+             System.out.println(results.poll());
+         }
+         System.out.println();
+
     }
 }
